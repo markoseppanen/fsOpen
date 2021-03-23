@@ -16,23 +16,29 @@ const App = () => {
   );
 };
 
-const Statistics = ({ good, neutral, bad }) => (
-  <>
-    <h2>statistics</h2>
-    <p>
-      Good: {good}
-      <br />
-      Neutral: {neutral}
-      <br />
-      Bad: {bad}
-      <br />
-      Total: {good + neutral + bad}
-      <br />
-      Average: {(good * 1 + bad * -1) / (good + neutral + bad)}
-      <br />
-      Positive: {(good / (good + neutral + bad)) * 100}%
-    </p>
-  </>
-);
+const Statistics = ({ good, neutral, bad }) => {
+  return (
+    <>
+      <h2>statistics</h2>
+      {good + neutral + bad == 0 ? (
+        <p>No Feedback given</p>
+      ) : (
+        <p>
+          Good: {good}
+          <br />
+          Neutral: {neutral}
+          <br />
+          Bad: {bad}
+          <br />
+          Total: {good + neutral + bad}
+          <br />
+          Average: {(good * 1 + bad * -1) / (good + neutral + bad)}
+          <br />
+          Positive: {(good / (good + neutral + bad)) * 100}%
+        </p>
+      )}
+    </>
+  );
+};
 
 export default App;
