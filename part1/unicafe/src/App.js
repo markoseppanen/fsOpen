@@ -22,14 +22,22 @@ const Statistics = ({ good, neutral, bad }) => (
     {good + neutral + bad === 0 ? (
       <p>No Feedback given</p>
     ) : (
-      <p>
-        <StatisticLine text="Good" value={good} />
-        <StatisticLine text="Neutral" value={neutral} />
-        <StatisticLine text="Bad" value={bad} />
-        <StatisticLine text="Total" value={good + neutral + bad} />
-        <StatisticLine text="Average" value={((good * 1 + bad * -1) / (good + neutral + bad)).toFixed(2)}/>
-        <StatisticLine text="Positive" value={`${((good / (good + neutral + bad)) * 100).toFixed(2)}%`}/>
-      </p>
+      <table>
+        <tbody>
+          <StatisticLine text="Good" value={good} />
+          <StatisticLine text="Neutral" value={neutral} />
+          <StatisticLine text="Bad" value={bad} />
+          <StatisticLine text="Total" value={good + neutral + bad} />
+          <StatisticLine
+            text="Average"
+            value={((good * 1 + bad * -1) / (good + neutral + bad)).toFixed(2)}
+          />
+          <StatisticLine
+            text="Positive"
+            value={`${((good / (good + neutral + bad)) * 100).toFixed(2)}%`}
+          />
+        </tbody>
+      </table>
     )}
   </>
 );
@@ -39,9 +47,12 @@ const Button = ({ handleClick, text }) => (
 );
 
 const StatisticLine = ({ text, value }) => (
-  <p>
-    {text}: {value}
-  </p>
+  <>
+    <tr>
+    <td>{text}:</td>
+    <td>{value}</td>
+    </tr>
+  </>
 );
 
 export default App;
