@@ -13,6 +13,8 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState({});
+ 
+  //const mostVotes = Object.keys(votes).reduce((a, b) => (votes[a] > votes[b] ? a : b));
 
   const selectRandom = (array) => {
     setSelected(Math.floor(Math.random() * array.length));
@@ -28,12 +30,19 @@ const App = () => {
 
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       {anecdotes[selected]}
       <br />
       Has {selected in votes ? votes[selected] : 0} votes
       <br />
       <button onClick={() => addVote(selected)}>vote quote</button>
       <button onClick={() => selectRandom(anecdotes)}>random anecdote</button>
+      <h2>Anecdote with most votes</h2>
+      {Object.keys(votes).length !== 0
+        ? anecdotes[
+            Object.keys(votes).reduce((a, b) => (votes[a] > votes[b] ? a : b))
+          ]
+        : "No votes given yet."}
     </div>
   );
 };
