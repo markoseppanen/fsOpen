@@ -1,5 +1,47 @@
 import React, { useState } from "react";
 
+const Filter = ({ filter, handleFilterChange }) => (
+  <form>
+    filter shown with: <input value={filter} onChange={handleFilterChange} />
+  </form>
+);
+
+const InputForm = ({
+  addPerson,
+  handleNameChange,
+  handleNumberChange,
+  newName,
+  newNumber,
+}) => (
+  <form onSubmit={addPerson}>
+    <div>
+      name: <input value={newName} onChange={handleNameChange} />
+    </div>
+    <div>
+      number:{" "}
+      <input
+        value={newNumber}
+        onChange={handleNumberChange}
+        type="tel"
+        pattern="[0-9\-]+"
+      />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+);
+
+const NameList = ({ filteredList }) => (
+  <ul>
+    {filteredList.map((person) => (
+      <li key={person.id}>
+        {person.name} - {person.number}
+      </li>
+    ))}
+  </ul>
+);
+
 const App = () => {
   const [persons, setPersons] = useState([
     { id: 1, name: "Maija Mallikas", number: "040-11235813" },
@@ -29,17 +71,17 @@ const App = () => {
     }
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    event.target.value === "" ? setShowAll(true) : setShowAll(false);
+  };
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
-  };
-
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-    event.target.value === "" ? setShowAll(true) : setShowAll(false);
   };
 
   const filteredList = showAll
@@ -51,36 +93,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        filter shown with:{" "}
-        <input value={filter} onChange={handleFilterChange} />
-      </form>
-      <h3>add new</h3>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number:{" "}
-          <input
-            value={newNumber}
-            onChange={handleNumberChange}
-            type="tel"
-            pattern="[0-9\-]+"
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
+      <h3>Add new</h3>
+      <InputForm
+        addPerson={addPerson}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        newName={newName}
+        newNumber={newNumber}
+      />
       <h3>Numbers</h3>
-      <ul>
-        {filteredList.map((person) => (
-          <li key={person.id}>
-            {person.name} - {person.number}
-          </li>
-        ))}
-      </ul>
+      <NameList filteredList={filteredList} />
     </div>
   );
 };
