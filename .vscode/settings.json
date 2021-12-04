@@ -4,4 +4,5 @@
     },
     "editor.fontFamily": "'SauceCodePro Nerd Font Mono',Menlo, Monaco, 'Courier New', monospace",
     "editor.fontSize": 14,
+    "editor.tabSize": 2,
 }
