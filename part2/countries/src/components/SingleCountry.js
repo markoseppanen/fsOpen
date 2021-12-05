@@ -13,7 +13,11 @@ export const SingleCountry = ({ country }) => (
         return <li key={idx}>{lang}</li>;
       })}{" "}
     </ul>
-    <img src={country.flags.png} alt={`Flag of ${country.name.common}`} />
+    <img
+      src={country.flags.png}
+      alt={`Flag of ${country.name.common}`}
+      title={`Flag of ${country.name.common}`}
+    />
     <Weather capital={country.capital} countryCode={country.cca2} />
   </figure>
 );
