@@ -2,11 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const Weather = ({ capital, countryCode }) => {
-  console.log("Weather-component, Capital", capital);
-  console.log("Weather-component, countryCode", countryCode);
-
-  const iconBaseURL = "http://openweathermap.org/img/wn";
-
   const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
@@ -20,6 +15,7 @@ export const Weather = ({ capital, countryCode }) => {
   if (weatherData === null) {
     return <p>No weather data.</p>;
   } else {
+    const iconBaseURL = "http://openweathermap.org/img/wn";
     return (
       <>
         <h3>Weather in {capital}</h3>

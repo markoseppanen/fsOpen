@@ -5,7 +5,7 @@ export const SingleCountry = ({ country }) => (
     <h2>{country.name.common}</h2>
     <p>
       Capital: {country.capital} <br />
-      Population: {country.population}
+      Population: {country.population.toLocaleString("en")}
     </p>
     <h3>Languages:</h3>
     <ul>
