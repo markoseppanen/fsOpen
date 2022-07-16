@@ -13,7 +13,7 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    Persons.getAll().then(persons => setPersons(persons));
+    Persons.getAllPersons().then(persons => setPersons(persons));
   }, []);
 
   const addPerson = event => {
@@ -22,13 +22,22 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`);
     } else {
-      Persons.add({
+      Persons.addPerson({
         name: newName,
         number: newNumber,
       }).then(person => setPersons(persons.concat(person)));
 
       setNewName('');
       setNewNumber('');
+    }
+  };
+
+  const deletePerson = id => {
+    const person = persons.filter(person => person.id === id).pop();
+
+    if (window.confirm(`Are you sure you want to delete ${person.name}`)) {
+      Persons.deletePerson(id);
+      setPersons(persons.filter(person => person.id !== id));
     }
   };
 
@@ -64,7 +73,7 @@ const App = () => {
         newNumber={newNumber}
       />
       <h3>Numbers</h3>
-      <NameList filteredList={filteredList} />
+      <NameList filteredList={filteredList} deletePerson={deletePerson} />
     </div>
   );
 };
