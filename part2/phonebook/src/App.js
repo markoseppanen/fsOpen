@@ -19,13 +19,33 @@ const App = () => {
   const addPerson = event => {
     event.preventDefault();
 
-    if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+    };
+
+    if (persons.some(person => person.name === newPerson.name)) {
+      const person = persons.find(person => person.name === newPerson.name);
+      console.log('Person exists:', person);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, do you want update the number?`
+        )
+      ) {
+        Persons.updatePerson(person.id, newPerson);
+        setPersons(
+          persons.map(person => {
+            if (person.name === newPerson.name) {
+              return { ...person, number: newPerson.number };
+            }
+            return person;
+          })
+        );
+      }
     } else {
-      Persons.addPerson({
-        name: newName,
-        number: newNumber,
-      }).then(person => setPersons(persons.concat(person)));
+      Persons.addPerson(newPerson).then(person =>
+        setPersons(persons.concat(person))
+      );
 
       setNewName('');
       setNewNumber('');
@@ -33,7 +53,7 @@ const App = () => {
   };
 
   const deletePerson = id => {
-    const person = persons.filter(person => person.id === id).pop();
+    const person = persons.find(person => person.id === id);
 
     if (window.confirm(`Are you sure you want to delete ${person.name}`)) {
       Persons.deletePerson(id);
