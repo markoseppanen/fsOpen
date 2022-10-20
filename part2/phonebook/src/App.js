@@ -29,7 +29,7 @@ const App = () => {
       console.log('Person exists:', person);
       if (
         window.confirm(
-          `${newName} is already added to phonebook, do you want update the number?`
+          `${newName} is already added to phonebook, do you want update the number?` // Doesn't work if there is extra whitespace, needs whitespace removal
         )
       ) {
         Persons.updatePerson(person.id, newPerson);
