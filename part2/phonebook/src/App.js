@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Filter } from './components/Filter';
 import { InputForm } from './components/InputForm';
 import { NameList } from './components/Namelist';
+import { Notification } from './components/Notification';
 import * as Persons from './services/Persons';
+import './index.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     Persons.getAllPersons().then(persons => setPersons(persons));
@@ -46,6 +49,12 @@ const App = () => {
       Persons.addPerson(newPerson).then(person =>
         setPersons(persons.concat(person))
       );
+
+      // Call notification
+      setMessage(`Added ${newName}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
 
       setNewName('');
       setNewNumber('');
@@ -83,6 +92,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h3>Add new</h3>
       <InputForm

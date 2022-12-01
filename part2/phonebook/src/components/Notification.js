@@ -1,7 +1,7 @@
-export const Notification = msg => {
-  if (!msg) {
+export const Notification = ({ message }) => {
+  if (message === null) {
     return null;
   }
 
-  return <div>{msg}</div>;
+  return <div className="notification">{message}</div>;
 };
