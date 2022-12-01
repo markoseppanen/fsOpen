@@ -4,6 +4,7 @@ import { Filter } from './components/Filter';
 import { InputForm } from './components/InputForm';
 import { NameList } from './components/Namelist';
 import { Notification } from './components/Notification';
+import { Error } from './components/Error';
 import * as Persons from './services/Persons';
 import './index.css';
 
@@ -13,7 +14,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [filter, setFilter] = useState('');
-  const [message, setMessage] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     Persons.getAllPersons().then(persons => setPersons(persons));
@@ -32,10 +34,15 @@ const App = () => {
       console.log('Person exists:', person);
       if (
         window.confirm(
-          `${newName} is already added to phonebook, do you want update the number?` // Doesn't work if there is extra whitespace, needs whitespace removal
+          `${newName.trim()} is already added to phonebook, do you want update the number?`
         )
       ) {
-        Persons.updatePerson(person.id, newPerson);
+        Persons.updatePerson(person.id, newPerson).catch(e => {
+          setErrorMessage(`${newPerson.name} already deleted from the server`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
         setPersons(
           persons.map(person => {
             if (person.name === newPerson.name) {
@@ -50,10 +57,9 @@ const App = () => {
         setPersons(persons.concat(person))
       );
 
-      // Call notification
-      setMessage(`Added ${newName}`);
+      setNotificationMessage(`Added ${newName}`);
       setTimeout(() => {
-        setMessage(null);
+        setNotificationMessage(null);
       }, 5000);
 
       setNewName('');
@@ -92,7 +98,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h3>Add new</h3>
       <InputForm
