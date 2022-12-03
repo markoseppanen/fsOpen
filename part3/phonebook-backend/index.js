@@ -1,7 +1,8 @@
-const e = require('express');
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
+require('dotenv').config();
 
 let persons = [
   {
@@ -26,6 +27,8 @@ let persons = [
   },
 ];
 
+app.use(cors());
+app.use(express.static('build'));
 app.use(express.json());
 
 morgan.token('data', req => {
@@ -76,7 +79,7 @@ app.post('/api/persons', (request, response) => {
   }
 
   persons = [...persons, newPerson];
-  response.status(200).json({ success: 'person added' });
+  response.status(201).json(newPerson);
 });
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -86,7 +89,8 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end();
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
