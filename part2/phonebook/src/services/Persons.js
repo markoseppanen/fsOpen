@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseURL = '/api/persons';
+const baseURL = process.env.REACT_APP_BASEURL;
 
 export const getAllPersons = () => {
   const req = axios.get(baseURL);

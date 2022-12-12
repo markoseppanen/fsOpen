@@ -1,11 +1,12 @@
-const e = require('express');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
-require('dotenv').config();
+const Person = require('./models/person');
+const person = require('./models/person');
 
-let persons = [
+/* let persons = [
   {
     id: 1,
     name: 'Arto Hellas',
@@ -26,7 +27,7 @@ let persons = [
     name: 'Mary Poppendieck',
     number: '39-23-6423122',
   },
-];
+]; */
 
 app.use(cors());
 app.use(express.static('build'));
@@ -43,16 +44,17 @@ app.use(
 );
 
 app.get('/api/persons', (_request, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => {
+    response.json(persons.map(person => person.toJSON()));
+  });
 });
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find(person => person.id === id);
-  if (person) {
-    response.json(person);
-  }
-  response.status(404).end();
+  Person.findById(request.params.id).then(person => {
+    console.log('Person returned', person.toJSON());
+    response.json(person.toJSON());
+  });
+  // response.status(404).end();
 });
 
 app.get('/info', (_request, response) => {

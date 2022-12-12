@@ -24,4 +24,5 @@ sketch
 
 *.rest
 .env
+.env*
 build/
