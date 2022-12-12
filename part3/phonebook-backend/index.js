@@ -4,30 +4,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
 const Person = require('./models/person');
-const person = require('./models/person');
-
-/* let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-]; */
 
 app.use(cors());
 app.use(express.static('build'));
@@ -54,22 +30,22 @@ app.get('/api/persons/:id', (request, response) => {
     console.log('Person returned', person.toJSON());
     response.json(person.toJSON());
   });
-  // response.status(404).end();
 });
 
 app.get('/info', (_request, response) => {
-  response.send(
-    `<p>Phonebook has info for ${persons.length} people.<br/>${Date()}</p>`
-  );
+  Person.find({}).then(persons => {
+    response.send(
+      `<p>Phonebook has info for ${persons.length} people.<br/>${Date()}</p>`
+    );
+  });
 });
 
 app.post('/api/persons', (request, response) => {
-  const newPerson = {
-    id: Math.floor(Math.random() * 10000),
+  const newPerson = new Person({
     ...request.body,
-  };
+  });
 
-  if (!newPerson.name) {
+  /*   if (!newPerson.name) {
     return response.status(400).json({ error: 'name is missing' });
   }
 
@@ -79,10 +55,9 @@ app.post('/api/persons', (request, response) => {
 
   if (persons.some(person => person.name === newPerson.name)) {
     return response.status(400).json({ error: 'name must be unique' }).end();
-  }
-
-  persons = [...persons, newPerson];
-  response.status(201).json(newPerson);
+  } */
+  newPerson.save();
+  response.status(201).json(newPerson.toJSON());
 });
 
 app.delete('/api/persons/:id', (request, response) => {
