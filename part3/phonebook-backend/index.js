@@ -68,8 +68,18 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error));
 });
 
+app.put('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndUpdate(request.params.id)
+    .then(_result => response.status(204).end())
+    .catch(error => next(error));
+});
+
 app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id)
+  const updatedPerson = new Person({
+    ...request.body,
+  });
+
+  Person.findByIdAndRemove(request.params.id, updatedPerson)
     .then(_result => response.status(204).end())
     .catch(error => next(error));
 });
