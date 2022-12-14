@@ -9,9 +9,9 @@ app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
 
-morgan.token('data', req => {
-  if (Object.keys(req.body).length !== 0) {
-    return JSON.stringify(req.body);
+morgan.token('data', request => {
+  if (Object.keys(request.body).length !== 0) {
+    return JSON.stringify(request.body);
   }
 });
 
@@ -19,28 +19,34 @@ app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :data')
 );
 
-app.get('/api/persons', (_request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons.map(person => person.toJSON()));
-  });
+app.get('/api/persons', (_request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      response.json(persons.map(person => person.toJSON()));
+    })
+    .catch(error => next(error));
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then(person => {
-    console.log('Person returned', person.toJSON());
-    response.json(person.toJSON());
-  });
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      console.log('Person returned', person.toJSON());
+      response.json(person.toJSON());
+    })
+    .catch(error => next(error));
 });
 
-app.get('/info', (_request, response) => {
-  Person.find({}).then(persons => {
-    response.send(
-      `<p>Phonebook has info for ${persons.length} people.<br/>${Date()}</p>`
-    );
-  });
+app.get('/info', (_request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      response.send(
+        `<p>Phonebook has info for ${persons.length} people.<br/>${Date()}</p>`
+      );
+    })
+    .catch(error => next(error));
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const newPerson = new Person({
     ...request.body,
   });
@@ -56,8 +62,10 @@ app.post('/api/persons', (request, response) => {
   if (persons.some(person => person.name === newPerson.name)) {
     return response.status(400).json({ error: 'name must be unique' }).end();
   } */
-  newPerson.save();
-  response.status(201).json(newPerson.toJSON());
+  newPerson
+    .save()
+    .then(savedPerson => response.status(201).json(savedPerson.toJSON()))
+    .catch(error => next(error));
 });
 
 app.delete('/api/persons/:id', (request, response, next) => {
