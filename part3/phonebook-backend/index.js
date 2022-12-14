@@ -60,11 +60,10 @@ app.post('/api/persons', (request, response) => {
   response.status(201).json(newPerson.toJSON());
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter(person => person.id !== id);
-
-  response.status(204).end();
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(_result => response.status(204).end())
+    .catch(error => next(error));
 });
 
 const PORT = process.env.PORT || 8080;
