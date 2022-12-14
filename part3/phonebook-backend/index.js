@@ -30,8 +30,11 @@ app.get('/api/persons', (_request, response, next) => {
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
-      console.log('Person returned', person.toJSON());
-      response.json(person.toJSON());
+      if (person) {
+        response.json(person.toJSON());
+      } else {
+        response.status(404).end;
+      }
     })
     .catch(error => next(error));
 });
@@ -84,8 +87,18 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error));
 });
 
-const PORT = process.env.PORT || 8080;
+const errorHandler = (error, _request, response, next) => {
+  console.error('Error handler:', error.message);
 
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
