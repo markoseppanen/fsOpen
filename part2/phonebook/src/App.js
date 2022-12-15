@@ -37,7 +37,7 @@ const App = () => {
           `${newName.trim()} is already added to phonebook, do you want update the number?`
         )
       ) {
-        Persons.updatePerson(person.id, newPerson).catch(e => {
+        Persons.updatePerson(person.id, newPerson).catch(error => {
           setErrorMessage(`${newPerson.name} already deleted from the server`);
           setTimeout(() => {
             setErrorMessage(null);
@@ -53,14 +53,21 @@ const App = () => {
         );
       }
     } else {
-      Persons.addPerson(newPerson).then(person =>
-        setPersons(persons.concat(person))
-      );
-
-      setNotificationMessage(`Added ${newName}`);
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 5000);
+      Persons.addPerson(newPerson)
+        .then(person => {
+          setPersons(persons.concat(person));
+          setNotificationMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        })
+        .catch(error => {
+          console.log(error.response.data.error);
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
 
       setNewName('');
       setNewNumber('');
