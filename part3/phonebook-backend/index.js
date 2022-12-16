@@ -51,20 +51,9 @@ app.get('/info', (_request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
   const newPerson = new Person({
-    ...request.body,
+    ...request.body
   })
 
-  /*   if (!newPerson.name) {
-    return response.status(400).json({ error: 'name is missing' });
-  }
-
-  if (!newPerson.number) {
-    return response.status(400).json({ error: 'number is missing' });
-  }
-
-  if (persons.some(person => person.name === newPerson.name)) {
-    return response.status(400).json({ error: 'name must be unique' }).end();
-  } */
   newPerson
     .save()
     .then(savedPerson => response.status(201).json(savedPerson.toJSON()))
@@ -72,14 +61,20 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndUpdate(request.params.id)
-    .then(_result => response.status(204).end())
+  const updatedPerson = { ...request.body }
+  console.log('updated person', updatedPerson)
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, {
+    new: true,
+    runValidators: true,
+    context: 'query'
+  })
+    .then(updatedPerson => response.json(updatedPerson))
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   const updatedPerson = new Person({
-    ...request.body,
+    ...request.body
   })
 
   Person.findByIdAndRemove(request.params.id, updatedPerson)
