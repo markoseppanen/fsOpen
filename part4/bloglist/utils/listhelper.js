@@ -12,39 +12,40 @@ const favoriteBlog = blogs => {
   }, 'empty list')
 }
 
-const listWithOneBlog = [
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
-  }
-]
-const listOfBlogs = [
-  {
-    _id: '63da1e3328967a8901b29f3b',
-    title: 'SchizoBlog',
-    author: 'Janne Toivoniemi',
-    url: 'https://schizoblog.me/',
-    likes: 69,
-    __v: 0
-  },
-  {
-    _id: '63ecc789748aa081c373bd87',
-    title: 'Also Sprach Jussi',
-    author: 'Jussi Mäntysaari',
-    url: 'http://alsosprachjussi.blogspot.com/',
-    likes: 666,
-    __v: 0
-  }
-]
+const mostBlogs = blogs => {
+  const authors = blogs.map(i => i.author).sort()
+  let maxCount = 0
+  let currentCount = 0
+  let currentAuthor = ''
+  let mostFrequentAuthor = ''
 
-const emptyBlogList = []
+  authors.forEach(author => {
+    if (author !== currentAuthor) {
+      currentAuthor = author
+      currentCount = 0
+      if (maxCount < currentCount) {
+        maxCount = currentCount
+        mostFrequentAuthor = author
+      }
+      if (mostFrequentAuthor === '') {
+        mostFrequentAuthor = author
+      }
+    }
 
-console.log(favoriteBlog(listWithOneBlog))
-console.log(favoriteBlog(listOfBlogs))
-console.log(favoriteBlog(emptyBlogList))
+    if (author === currentAuthor) {
+      currentCount += 1
 
-module.exports = { dummy, totalLikes, favoriteBlog }
+      if (maxCount < currentCount) {
+        maxCount = currentCount
+        mostFrequentAuthor = author
+      }
+      if (mostFrequentAuthor === '') {
+        mostFrequentAuthor = author
+      }
+    }
+  })
+
+  return { author: mostFrequentAuthor, blogs: currentCount }
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
