@@ -129,6 +129,43 @@ describe('favorite blog', () => {
 describe('most blogs', () => {
   test('author with most blogs in the big list', () => {
     const result = listHelper.mostBlogs(bigListofBlogs)
-    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+    expect(result).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3
+    })
+  })
+
+  test('list with single blog should return its author', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      blogs: 1
+    })
+  })
+})
+
+describe('most likes', () => {
+  test('correct result for big list of blogs', () => {
+    const result = listHelper.mostLikes(bigListofBlogs)
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    })
+  })
+
+  test('correct result for small list', () => {
+    const result = listHelper.mostLikes(listOfBlogs)
+    expect(result).toEqual({
+      author: 'Jussi Mäntysaari',
+      likes: 666
+    })
+  })
+
+  test('correct result for list with only one blog', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 5
+    })
   })
 })

@@ -13,39 +13,49 @@ const favoriteBlog = blogs => {
 }
 
 const mostBlogs = blogs => {
-  const authors = blogs.map(i => i.author).sort()
-  let maxCount = 0
-  let currentCount = 0
-  let currentAuthor = ''
-  let mostFrequentAuthor = ''
+  const freq = {}
+  let max = 0
+  let result
 
-  authors.forEach(author => {
-    if (author !== currentAuthor) {
-      currentAuthor = author
-      currentCount = 0
-      if (maxCount < currentCount) {
-        maxCount = currentCount
-        mostFrequentAuthor = author
-      }
-      if (mostFrequentAuthor === '') {
-        mostFrequentAuthor = author
-      }
+  for (const blog of blogs) {
+    if (freq[blog.author]) {
+      freq[blog.author] += 1
+    } else {
+      freq[blog.author] = 1
     }
+  }
 
-    if (author === currentAuthor) {
-      currentCount += 1
-
-      if (maxCount < currentCount) {
-        maxCount = currentCount
-        mostFrequentAuthor = author
-      }
-      if (mostFrequentAuthor === '') {
-        mostFrequentAuthor = author
-      }
+  for (const author in freq) {
+    if (freq[author] > max) {
+      max = freq[author]
+      result = author
     }
-  })
+  }
 
-  return { author: mostFrequentAuthor, blogs: currentCount }
+  return { author: result, blogs: max }
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+const mostLikes = blogs => {
+  const likes = {}
+  let mostLikes = 0
+  let result
+
+  for (const blog of blogs) {
+    if (likes[blog.author]) {
+      likes[blog.author] += blog.likes
+    } else {
+      likes[blog.author] = blog.likes
+    }
+  }
+
+  for (const author in likes) {
+    if (likes[author] > mostLikes) {
+      mostLikes = likes[author]
+      result = author
+    }
+  }
+
+  return { author: result, likes: mostLikes }
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
