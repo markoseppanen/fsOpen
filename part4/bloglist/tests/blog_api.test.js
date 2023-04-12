@@ -82,4 +82,17 @@ describe('blog api POST-tests', () => {
     expect(blogs).toHaveLength(3)
     expect(blogs[2]).toEqual(additionalBlog)
   })
+
+  test('if likes is missing it defaults to 0', async () => {
+    const newBlog = new Blog(additionalBlog)
+    newBlog.likes = undefined
+    await newBlog.save()
+
+    const response = await api.get('/api/blogs')
+    const blog = response.body.pop()
+
+    console.log(blog)
+
+    expect(blog.likes).toBe(0)
+  })
 })
