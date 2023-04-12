@@ -56,4 +56,14 @@ describe('blog api tests', () => {
 
     expect(response.body).toHaveLength(2)
   })
+
+  test('id is defined', async () => {
+    const response = await api.get('/api/blogs')
+
+    const blogs = response.body
+
+    blogs.forEach(blog => {
+      expect(blog.id).toBeDefined()
+    })
+  })
 })
