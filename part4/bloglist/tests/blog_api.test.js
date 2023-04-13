@@ -73,8 +73,11 @@ describe('blog api GET-tests', () => {
 
 describe('blog api POST-tests', () => {
   test('number of blogs is incremented and data matches', async () => {
-    const newBlog = new Blog(additionalBlog)
-    await newBlog.save()
+    await api
+      .post('/api/blogs')
+      .send(additionalBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
     const blogs = response.body.map(({ id, ...rest }) => rest)
@@ -82,15 +85,27 @@ describe('blog api POST-tests', () => {
     expect(blogs).toHaveLength(3)
     expect(blogs[2]).toEqual(additionalBlog)
   })
-
   test('if likes is missing it defaults to 0', async () => {
     const blogWithoutLikes = (({ likes, ...rest }) => rest)(additionalBlog)
-    const newBlog = new Blog(blogWithoutLikes)
-    await newBlog.save()
+
+    await api
+      .post('/api/blogs')
+      .send(blogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
     const blog = response.body.pop()
 
     expect(blog.likes).toBe(0)
+  })
+  test('if title or url is missing responds with 400 bad request', async () => {
+    const blogWithoutUrl = (({ url, ...rest }) => rest)(additionalBlog)
+
+    await api.post('/api/blogs').send(blogWithoutUrl).expect(400)
+
+    const blogWithoutTitle = (({ title, ...rest }) => rest)(additionalBlog)
+
+    await api.post('/api/blogs').send(blogWithoutTitle).expect(400)
   })
 })
