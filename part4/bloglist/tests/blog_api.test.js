@@ -84,14 +84,12 @@ describe('blog api POST-tests', () => {
   })
 
   test('if likes is missing it defaults to 0', async () => {
-    const newBlog = new Blog(additionalBlog)
-    newBlog.likes = undefined
+    const blogWithoutLikes = (({ likes, ...rest }) => rest)(additionalBlog)
+    const newBlog = new Blog(blogWithoutLikes)
     await newBlog.save()
 
     const response = await api.get('/api/blogs')
     const blog = response.body.pop()
-
-    console.log(blog)
 
     expect(blog.likes).toBe(0)
   })
