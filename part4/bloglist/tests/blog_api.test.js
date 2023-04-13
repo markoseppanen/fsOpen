@@ -85,6 +85,7 @@ describe('blog api POST-tests', () => {
     expect(blogs).toHaveLength(3)
     expect(blogs[2]).toEqual(additionalBlog)
   })
+
   test('if likes is missing it defaults to 0', async () => {
     const blogWithoutLikes = (({ likes, ...rest }) => rest)(additionalBlog)
 
@@ -99,6 +100,7 @@ describe('blog api POST-tests', () => {
 
     expect(blog.likes).toBe(0)
   })
+
   test('if title or url is missing responds with 400 bad request', async () => {
     const blogWithoutUrl = (({ url, ...rest }) => rest)(additionalBlog)
 
