@@ -125,3 +125,25 @@ describe('blog api DELETE-tests', () => {
     expect(postDeletionBlogs.length).toBe(initialBlogs.length - 1)
   })
 })
+
+describe('blog api PUT-tests', () => {
+  test('updating blogs likes succeeds', async () => {
+    const initialResponse = await api.get('/api/blogs')
+    const initialBlogs = initialResponse.body
+
+    const blog = initialBlogs[0]
+    blog.likes += 1
+
+    const updatedResponse = await api.put(`/api/blogs/${blog.id}`).send(blog)
+    const updatedBlog = updatedResponse.body
+
+    // Check that PUT-operation returns updated blog instead of original
+    expect(updatedBlog.likes).toBe(blog.likes)
+
+    const postUpdateResponse = await api.get('/api/blogs')
+    const postUpdateBlogs = postUpdateResponse.body
+
+    // Check that new GET-operation returns correctly updated blog
+    expect(postUpdateBlogs[0].likes).toBe(blog.likes)
+  })
+})
