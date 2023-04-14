@@ -111,3 +111,17 @@ describe('blog api POST-tests', () => {
     await api.post('/api/blogs').send(blogWithoutTitle).expect(400)
   })
 })
+
+describe('blog api DELETE-tests', () => {
+  test('deletion of single blog by ID succeeds', async () => {
+    const initialResponse = await api.get('/api/blogs')
+    const initialBlogs = initialResponse.body
+
+    await api.delete(`/api/blogs/${initialBlogs[initialBlogs.length - 1].id}`)
+
+    const postDeletionResponse = await api.get('/api/blogs')
+    const postDeletionBlogs = postDeletionResponse.body
+
+    expect(postDeletionBlogs.length).toBe(initialBlogs.length - 1)
+  })
+})
