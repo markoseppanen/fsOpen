@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
-const config = require('../utils/config')
-const mongoUrl = config.MONGODB_URI
+// const mongoUrl = config.MONGODB_URI
 
 const supertest = require('supertest')
 const app = require('../app')
@@ -30,16 +29,10 @@ const additionalBlog = {
   likes: 12
 }
 
-beforeAll(async () => {
-  await mongoose.connect(mongoUrl) // Fixes "Jest did not exit"-warning
-})
-
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  const blogsToInsert = initialBlogs.map(blog => new Blog(blog))
+  await Blog.insertMany(blogsToInsert)
 })
 
 afterAll(async () => {
