@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// const mongoUrl = config.MONGODB_URI
 
 const supertest = require('supertest')
 const app = require('../app')
@@ -31,7 +30,7 @@ const additionalBlog = {
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  const blogsToInsert = initialBlogs.map(blog => new Blog(blog))
+  const blogsToInsert = initialBlogs.map((blog) => new Blog(blog))
   await Blog.insertMany(blogsToInsert)
 })
 
@@ -58,7 +57,7 @@ describe('blog api GET-tests', () => {
 
     const blogs = response.body
 
-    blogs.forEach(blog => {
+    blogs.forEach((blog) => {
       expect(blog.id).toBeDefined()
     })
   })

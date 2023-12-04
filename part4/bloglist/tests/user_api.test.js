@@ -22,7 +22,7 @@ const additionalUser = {
 
 beforeEach(async () => {
   await User.deleteMany({})
-  const usersToInsert = initialUsers.map(user => new User(user))
+  const usersToInsert = initialUsers.map((user) => new User(user))
   await User.insertMany(usersToInsert)
 })
 
@@ -42,5 +42,47 @@ describe('users api POST-tests', () => {
     const users = response.body.map(({ id, ...rest }) => rest)
 
     expect(users).toHaveLength(2)
+  })
+
+  test('user is not added if username is missing', async () => {
+    const userWithoutUsername = { ...additionalUser }
+    delete userWithoutUsername.username
+
+    await api
+      .post('/api/users')
+      .send(userWithoutUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('user is not added if username is too short', async () => {
+    const userWithShortUsername = { ...additionalUser, username: 'ab' }
+
+    await api
+      .post('/api/users')
+      .send(userWithShortUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('user is not added if password is missing', async () => {
+    const userWithoutPassword = { ...additionalUser }
+    delete userWithoutPassword.password
+
+    await api
+      .post('/api/users')
+      .send(userWithoutPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('user is not added if username is too short', async () => {
+    const userWithShortPassword = { ...additionalUser, password: 'ab' }
+
+    await api
+      .post('/api/users')
+      .send(userWithShortPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
   })
 })
