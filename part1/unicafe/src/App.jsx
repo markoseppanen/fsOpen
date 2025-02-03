@@ -1,25 +1,7 @@
 import { useState } from "react";
-
-const Header = ({ title }) => <h1>{title}</h1>;
-
-const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>;
-
-const Statistics = ({ good, neutral, bad }) => {
-  if (good + bad + neutral === 0) {
-    return <p>No feedback given</p>;
-  }
-
-  return (
-    <section>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {good + neutral + bad}</p>
-      <p>average {(good + bad * -1) / (good + neutral + bad)}</p>
-      <p>positive {(good / (good + neutral + bad)) * 100}%</p>
-    </section>
-  );
-};
+import { Header } from "./components/Header";
+import { Button } from "./components/Button";
+import { Statistics } from "./components/Statistics";
 
 const App = () => {
   const [good, setGood] = useState(0);
