@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { Filter } from "../components/Filter";
+import { InputForm } from "../components/InputForm";
+import { PersonList } from "../components/PersonList";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -6,6 +9,14 @@ const App = () => {
   ]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
+
+  const personsToShow =
+    filter === ""
+      ? persons
+      : persons.filter((person) =>
+          person.name.toLowerCase().includes(filter.toLowerCase())
+        );
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -15,9 +26,17 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
-    const newPerson = { name: newName, number: newNumber, id: persons.length + 1};
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1,
+    };
 
     if (persons.some((person) => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`);
@@ -30,23 +49,16 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <p>
-          name: <input value={newName} onChange={handleNameChange} />
-        </p>
-        <p>
-          number <input value={newNumber} onChange={handleNumberChange} />
-        </p>
-        <p>debug: {newName} {newNumber}</p>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.map((person) => (
-        <p key={person.id}>{person.name} {person.number}</p>
-      ))}
+      <h1>Phonebook</h1>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
+      <InputForm
+        addPerson={addPerson}
+        newName={newName}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
+      <PersonList persons={personsToShow} />
     </div>
   );
 };
