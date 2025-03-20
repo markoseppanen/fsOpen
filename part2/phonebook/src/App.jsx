@@ -1,21 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter } from "../components/Filter";
 import { InputForm } from "../components/InputForm";
 import { PersonList } from "../components/PersonList";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-1234567", id: 1 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3001/persons")
+      .then((response) => response.json())
+      .then((data) => setPersons(data));
+  });
 
   const personsToShow =
     filter === ""
       ? persons
       : persons.filter((person) =>
-          person.name.toLowerCase().includes(filter.toLowerCase())
+          person.name.toLowerCase().includes(filter.toLowerCase()),
         );
 
   const handleNameChange = (event) => {
