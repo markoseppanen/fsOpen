@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { Filter } from "../components/Filter";
-import { InputForm } from "../components/InputForm";
-import { PersonList } from "../components/PersonList";
+
+import { Filter } from "./components/Filter";
+import { InputForm } from "./components/InputForm";
+import { PersonList } from "./components/PersonList";
+import * as notes from "./services/notes";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,9 +12,7 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    notes.getAll().then((initialPersons) => setPersons(initialPersons));
   });
 
   const personsToShow =
@@ -46,13 +45,11 @@ const App = () => {
     if (persons.some((person) => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`);
     } else {
-      axios
-        .post("http://localhost:3001/persons", newPerson)
-        .then((response) => {
-          setPersons(persons.concat(response.data));
-          setNewName("");
-          setNewNumber("");
-        });
+      notes.add(newPerson).then((person) => {
+        setPersons(persons.concat(person));
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
