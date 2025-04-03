@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Filter } from "./components/Filter";
 import { InputForm } from "./components/InputForm";
 import { PersonList } from "./components/PersonList";
-import * as notes from "./services/notes";
+import * as personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,8 +12,8 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    notes.getAll().then((initialPersons) => setPersons(initialPersons));
-  });
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+  }, []);
 
   const personsToShow =
     filter === ""
@@ -39,16 +39,39 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      // id: persons.length + 1,
     };
 
     if (persons.some((person) => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, do you want to replace the old number with a new one?`,
+        )
+      ) {
+        const personId = persons.find((person) => person.name === newName).id;
+        personService.update(personId, newPerson).then((updatedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== personId ? person : updatedPerson,
+            ),
+          );
+          setNewName("");
+          setNewNumber("");
+        });
+      }
     } else {
-      notes.add(newPerson).then((person) => {
+      personService.add(newPerson).then((person) => {
         setPersons(persons.concat(person));
         setNewName("");
         setNewNumber("");
+      });
+    }
+  };
+
+  const removePerson = (id) => {
+    const person = persons.find((p) => p.id === id);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.remove(id).then(() => {
+        setPersons(persons.filter((p) => p.id !== id));
       });
     }
   };
@@ -64,7 +87,7 @@ const App = () => {
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
-      <PersonList persons={personsToShow} />
+      <PersonList persons={personsToShow} removePerson={removePerson} />
     </div>
   );
 };
