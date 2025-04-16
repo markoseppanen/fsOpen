@@ -1,0 +1,15 @@
+meta {
+  name: GET person
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3001/api/persons/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}

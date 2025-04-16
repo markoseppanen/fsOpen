@@ -1,0 +1,17 @@
+meta {
+  name: POST persons (missing name)
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3001/api/persons
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "number": "53521-5151"
+  }
+}

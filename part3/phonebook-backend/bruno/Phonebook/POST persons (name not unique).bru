@@ -1,0 +1,18 @@
+meta {
+  name: POST persons (name not unique)
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:3001/api/persons
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Ada Lovelace",
+    "number": "53521-5151"
+  }
+}
