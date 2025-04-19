@@ -1,6 +1,8 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
+require('dotenv').config()
 
 const persons = [
   {
@@ -25,6 +27,12 @@ const persons = [
   }
 ];
 
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 morgan.token('data', (req) => {
@@ -36,7 +44,7 @@ app.use(
 
 // GET-routes start
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (_request, response) => {
   response.json(persons);
 });
 
@@ -46,7 +54,7 @@ app.get('/api/persons/:id', (request, response) => {
   response.json(person);
 });
 
-app.get('/info', (request, response) => {
+app.get('/info', (_request, response) => {
   response.send(
     `<p>Phonebook has info for ${
       persons.length

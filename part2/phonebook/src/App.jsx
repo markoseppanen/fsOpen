@@ -1,28 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { Filter } from "./components/Filter";
-import { InputForm } from "./components/InputForm";
-import { PersonList } from "./components/PersonList";
-import * as personService from "./services/persons";
-import { Notification } from "./components/Notification";
+import { Filter } from './components/Filter';
+import { InputForm } from './components/InputForm';
+import { PersonList } from './components/PersonList';
+import * as personService from './services/persons';
+import { Notification } from './components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState("");
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+    personService
+      .getAll()
+      .then((initialPersons) => setPersons(initialPersons))
+      .catch((error) => console.log('getAll failed:', error));
   }, []);
 
   const personsToShow =
-    filter === ""
+    filter === ''
       ? persons
       : persons.filter((person) =>
-          person.name.toLowerCase().includes(filter.toLowerCase()),
+          person.name.toLowerCase().includes(filter.toLowerCase())
         );
 
   const handleNameChange = (event) => {
@@ -41,13 +44,13 @@ const App = () => {
     event.preventDefault();
     const newPerson = {
       name: newName,
-      number: newNumber,
+      number: newNumber
     };
 
     if (persons.some((person) => person.name === newName)) {
       if (
         window.confirm(
-          `${newName} is already added to phonebook, do you want to replace the old number with a new one?`,
+          `${newName} is already added to phonebook, do you want to replace the old number with a new one?`
         )
       ) {
         const personId = persons.find((person) => person.name === newName).id;
@@ -56,13 +59,13 @@ const App = () => {
           .then((updatedPerson) => {
             setPersons(
               persons.map((person) =>
-                person.id !== personId ? person : updatedPerson,
-              ),
+                person.id !== personId ? person : updatedPerson
+              )
             );
-            setNewName("");
-            setNewNumber("");
+            setNewName('');
+            setNewNumber('');
             setNotificationMessage(`Updated ${updatedPerson.name}`);
-            setNotificationType("success");
+            setNotificationType('success');
             setTimeout(() => {
               setNotificationMessage(null);
               setNotificationType(null);
@@ -70,9 +73,9 @@ const App = () => {
           })
           .catch((_error) => {
             setNotificationMessage(
-              `${newName} was already removed from the server.`,
+              `${newName} was already removed from the server.`
             );
-            setNotificationType("error");
+            setNotificationType('error');
             setTimeout(() => {
               setNotificationMessage(null);
               setNotificationType(null);
@@ -82,10 +85,10 @@ const App = () => {
     } else {
       personService.add(newPerson).then((person) => {
         setPersons(persons.concat(person));
-        setNewName("");
-        setNewNumber("");
+        setNewName('');
+        setNewNumber('');
         setNotificationMessage(`Added ${person.name}`);
-        setNotificationType("success");
+        setNotificationType('success');
         setTimeout(() => {
           setNotificationMessage(null);
           setNotificationType(null);
