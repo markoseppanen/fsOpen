@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
-require('dotenv').config()
+require('dotenv').config();
 
 const persons = [
   {
@@ -28,7 +28,7 @@ const persons = [
 ];
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN,
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
