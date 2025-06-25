@@ -1,6 +1,8 @@
 import axios from "axios";
+const mode = import.meta.env.MODE;
 
-const baseUrl = "/api/persons";
+const baseUrl =
+  mode === "development" ? "http://localhost:3001/api/persons" : "/api/persons";
 
 export const getAll = () => {
   const request = axios.get(baseUrl);
