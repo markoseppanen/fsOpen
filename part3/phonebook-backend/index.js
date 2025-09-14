@@ -27,18 +27,15 @@ app.use(
 
 // GET-routes start
 
-app.get("/api/persons", (_request, response) => {
+app.get("/api/persons", (_request, response, next) => {
   Person.find({})
     .then((persons) => {
       response.json(persons);
     })
-    .catch((error) => {
-      console.error(error);
-      response.status(500).end();
-    });
+    .catch((error) => next(error));
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
       if (person) {
@@ -47,23 +44,17 @@ app.get("/api/persons/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.error(error);
-      response.status(400).send({ error: "malformed id" });
-    });
+    .catch((error) => next(error));
 });
 
-app.get("/info", (_request, response) => {
+app.get("/info", (_request, response, next) => {
   Person.countDocuments({})
     .then((count) => {
       response.send(
         `<p>Phonebook has info for ${count} people</p><p>${new Date()}</p>`,
       );
     })
-    .catch((err) => {
-      console.error(err);
-      response.status(500).end();
-    });
+    .catch((error) => next(error));
 });
 
 // DELETE-routes start
@@ -89,10 +80,6 @@ app.post("/api/persons", (request, response, next) => {
     return response.status(400).json({ error: "number is missing" });
   }
 
-  // if (persons.some((person) => person.name === newPerson.name)) {
-  //   return response.status(400).json({ error: "name must be unique" });
-  // }
-
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -106,6 +93,27 @@ app.post("/api/persons", (request, response, next) => {
     .catch((error) => {
       next(error);
     });
+});
+
+// PUT-routes start
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        response.json(updatedPerson);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (_request, response) => {

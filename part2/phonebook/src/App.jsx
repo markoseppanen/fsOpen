@@ -80,6 +80,7 @@ const App = () => {
             setNotification(`Updated ${updatedPerson.name}`, "success", 5000);
           })
           .catch((_error) => {
+            setPersons(persons.filter((person) => person.id !== personId));
             setNotification(
               `${newName} was already removed from the server.`,
               "error",
@@ -99,6 +100,7 @@ const App = () => {
   const removePerson = (id) => {
     const person = persons.find((p) => p.id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
+      setNotification(`Deleted ${person.name}`, "success", 5000);
       personService.remove(id).then(() => {
         setPersons(persons.filter((p) => p.id !== id));
       });

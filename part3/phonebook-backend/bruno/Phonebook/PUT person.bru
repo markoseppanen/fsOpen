@@ -1,0 +1,22 @@
+meta {
+  name: PUT person
+  type: http
+  seq: 9
+}
+
+put {
+  url: http://localhost:3001/api/persons/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 68c61943e896423cd96bab72
+}
+
+body:json {
+  {
+    "name": "Kaapo",
+    "number": "53521-5151"
+  }
+}
