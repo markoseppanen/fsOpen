@@ -79,21 +79,34 @@ const App = () => {
             clearFields();
             setNotification(`Updated ${updatedPerson.name}`, "success", 5000);
           })
-          .catch((_error) => {
-            setPersons(persons.filter((person) => person.id !== personId));
-            setNotification(
-              `${newName} was already removed from the server.`,
-              "error",
-              5000,
-            );
+          .catch((error) => {
+            console.log("Update error:", error);
+
+            // Check if it's a 404 error (person not found) or validation error
+            if (error.response && error.response.status === 404) {
+              setPersons(persons.filter((person) => person.id !== personId));
+              setNotification(
+                `Information of ${newName} has already been removed from server`,
+                "error",
+                5000,
+              );
+            } else {
+              // Validation or other server error
+              setNotification(error.response.data.error, "error", 5000);
+            }
           });
       }
     } else {
-      personService.add(newPerson).then((person) => {
-        setPersons(persons.concat(person));
-        clearFields();
-        setNotification(`Added ${person.name}`, "success", 5000);
-      });
+      personService
+        .add(newPerson)
+        .then((person) => {
+          setPersons(persons.concat(person));
+          clearFields();
+          setNotification(`Added ${person.name}`, "success", 5000);
+        })
+        .catch((error) => {
+          setNotification(`${error.response.data.error}`, "error", 5000);
+        });
     }
   };
 
