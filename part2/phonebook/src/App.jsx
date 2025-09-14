@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import { Filter } from './components/Filter';
-import { InputForm } from './components/InputForm';
-import { PersonList } from './components/PersonList';
-import * as personService from './services/persons';
-import { Notification } from './components/Notification';
+import { Filter } from "./components/Filter";
+import { InputForm } from "./components/InputForm";
+import { PersonList } from "./components/PersonList";
+import * as personService from "./services/persons";
+import { Notification } from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState('');
-  const [newNumber, setNewNumber] = useState('');
-  const [filter, setFilter] = useState('');
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
 
@@ -18,14 +18,14 @@ const App = () => {
     personService
       .getAll()
       .then((initialPersons) => setPersons(initialPersons))
-      .catch((error) => console.log('getAll failed:', error));
+      .catch((error) => console.log("getAll failed:", error));
   }, []);
 
   const personsToShow =
-    filter === ''
+    filter === ""
       ? persons
       : persons.filter((person) =>
-          person.name.toLowerCase().includes(filter.toLowerCase())
+          person.name.toLowerCase().includes(filter.toLowerCase()),
         );
 
   const handleNameChange = (event) => {
@@ -40,17 +40,31 @@ const App = () => {
     setFilter(event.target.value);
   };
 
+  const clearFields = () => {
+    setNewName("");
+    setNewNumber("");
+  };
+
+  const setNotification = (message, type, timeout) => {
+    setNotificationMessage(message);
+    setNotificationType(type);
+    setTimeout(() => {
+      setNotificationMessage(null);
+      setNotificationType(null);
+    }, timeout);
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
     const newPerson = {
       name: newName,
-      number: newNumber
+      number: newNumber,
     };
 
     if (persons.some((person) => person.name === newName)) {
       if (
         window.confirm(
-          `${newName} is already added to phonebook, do you want to replace the old number with a new one?`
+          `${newName} is already added to phonebook, do you want to replace the old number with a new one?`,
         )
       ) {
         const personId = persons.find((person) => person.name === newName).id;
@@ -59,40 +73,25 @@ const App = () => {
           .then((updatedPerson) => {
             setPersons(
               persons.map((person) =>
-                person.id !== personId ? person : updatedPerson
-              )
+                person.id !== personId ? person : updatedPerson,
+              ),
             );
-            setNewName('');
-            setNewNumber('');
-            setNotificationMessage(`Updated ${updatedPerson.name}`);
-            setNotificationType('success');
-            setTimeout(() => {
-              setNotificationMessage(null);
-              setNotificationType(null);
-            }, 5000);
+            clearFields();
+            setNotification(`Updated ${updatedPerson.name}`, "success", 5000);
           })
           .catch((_error) => {
-            setNotificationMessage(
-              `${newName} was already removed from the server.`
+            setNotification(
+              `${newName} was already removed from the server.`,
+              "error",
+              5000,
             );
-            setNotificationType('error');
-            setTimeout(() => {
-              setNotificationMessage(null);
-              setNotificationType(null);
-            }, 5000);
           });
       }
     } else {
       personService.add(newPerson).then((person) => {
         setPersons(persons.concat(person));
-        setNewName('');
-        setNewNumber('');
-        setNotificationMessage(`Added ${person.name}`);
-        setNotificationType('success');
-        setTimeout(() => {
-          setNotificationMessage(null);
-          setNotificationType(null);
-        }, 5000);
+        clearFields();
+        setNotification(`Added ${person.name}`, "success", 5000);
       });
     }
   };
